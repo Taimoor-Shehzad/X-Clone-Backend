@@ -6,6 +6,7 @@ import { clerkMiddleware } from "@clerk/express";
 import userRoutes from "./routes/user.route.js";
 import postRoutes from "./routes/post.route.js";
 import commentRoutes from "./routes/post.route.js";
+import notificationRoutes from "./routes/notification.route.js";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(cors());
 app.use("/api/user", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.use((err, req, res, next) => {
   console.log("Unhadled Error", err);
