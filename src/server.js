@@ -5,6 +5,7 @@ import { connectDB } from "./config/db.js";
 import { clerkMiddleware } from "@clerk/express";
 import userRoutes from "./routes/user.route.js";
 import postRoutes from "./routes/post.route.js";
+import commentRoutes from "./routes/post.route.js";
 
 const app = express();
 
@@ -14,13 +15,15 @@ app.use(cors());
 
 app.use("/api/user", userRoutes);
 app.use("/api/posts", postRoutes);
+app.use("/api/comments", commentRoutes);
 
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   console.log("Unhadled Error", err);
   res.status(500).json({ error: err.message || "Internal server error" });
 });
 
 app.get("/", (req, res) => res.send("Hello from server"));
+
 const startServer = async () => {
   try {
     await connectDB();
