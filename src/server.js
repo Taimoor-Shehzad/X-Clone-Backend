@@ -16,9 +16,9 @@ app.use(express.json());
 app.use(clerkMiddleware());
 
 app.use(cors());
-app.use(arcjetMiddleware);
+// app.use(arcjetMiddleware);
 
-app.use("/api/user", userRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/notifications", notificationRoutes);
