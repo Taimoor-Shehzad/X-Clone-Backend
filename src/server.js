@@ -18,7 +18,9 @@ app.use(clerkMiddleware());
 app.use(cors());
 // app.use(arcjetMiddleware);
 
-app.use("/api/users", userRoutes);
+app.use("/api/users", (req, res) => {
+  res.status(200).json({ message: "Users are available" });
+});
 app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/notifications", notificationRoutes);
