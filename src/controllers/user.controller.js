@@ -25,6 +25,10 @@ export const updateProfile = asyncHandler(async (req, res) => {
 export const syncUser = asyncHandler(async (req, res) => {
   const { userId } = getAuth(req);
 
+  if (!userId) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   const existingUser = await User.findOne({ clerkId: userId });
   if (existingUser) {
     return res
@@ -33,13 +37,28 @@ export const syncUser = asyncHandler(async (req, res) => {
   }
 
   const clerkUser = await clerkClient.users.getUser(userId);
+  const emailAddress =
+    clerkUser.emailAddresses?.find(
+      (email) => email.id === clerkUser.primaryEmailAddressId,
+    ) || clerkUser.emailAddresses?.[0];
+
+  if (!emailAddress?.emailAddress) {
+    return res.status(400).json({ error: "Clerk user has no email address" });
+  }
+
+  const email = emailAddress.emailAddress;
+  const baseUsername = email.split("@")[0];
+  const usernameTaken = await User.exists({
+    username: baseUsername,
+    clerkId: { $ne: userId },
+  });
 
   const userData = {
     clerkId: userId,
-    email: clerkUser.emailAddresses[0].emailAddress,
+    email,
     firstName: clerkUser.firstName || "",
     lastName: clerkUser.lastName || "",
-    username: clerkUser.emailAddresses[0].emailAddress.split("@")[0],
+    username: usernameTaken ? `${baseUsername}_${userId.slice(-6)}` : baseUsername,
     profilePicture: clerkUser.imageUrl || "",
   };
 
