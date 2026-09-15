@@ -147,7 +147,3 @@ export const followUser = asyncHandler(async (req, res) => {
     message: isFollowing ? "unfollowed succesfully" : "Followed Succesfully",
   });
 });
-
-export const checkHealth = async (req, res) => {
-  res.status(200).json({ message: "Checking is working" });
-};

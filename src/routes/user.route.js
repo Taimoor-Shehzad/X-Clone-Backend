@@ -1,6 +1,5 @@
 import express from "express";
 import {
-  checkHealth,
   followUser,
   getCurrentUser,
   getUserProfile,
@@ -19,9 +18,5 @@ router.put("/profile", protectRoute, updateProfile);
 router.post("/sync", protectRoute, syncUser);
 router.get("/me", protectRoute, getCurrentUser);
 router.post("/follow/:targetUserId", protectRoute, followUser);
-
-//temp
-
-router.get("/check", checkHealth);
 
 export default router;
