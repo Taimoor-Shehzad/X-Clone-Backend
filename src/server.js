@@ -70,7 +70,7 @@ app.set("trust proxy", true);
 app.use(express.json());
 app.use(clerkMiddleware());
 app.use(cors());
-app.use(arcjetMiddleware());
+// app.use(arcjetMiddleware());
 
 const startServer = async () => {
   try {
