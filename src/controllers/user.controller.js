@@ -22,9 +22,77 @@ export const updateProfile = asyncHandler(async (req, res) => {
   res.status(200).json({ user });
 });
 
+// export const syncUser = asyncHandler(async (req, res) => {
+//   console.log("➡️ [syncUser] Incoming sync request");
+
+//   const { userId } = getAuth(req);
+
+//   if (!userId) {
+//     console.warn(
+//       "⚠️ [syncUser] Unauthorized: Missing userId from Clerk auth context",
+//     );
+//     return res.status(401).json({ error: "Unauthorized" });
+//   }
+
+//   console.log(`🔍 [syncUser] Processing request for Clerk ID: ${userId}`);
+
+//   const existingUser = await User.findOne({ clerkId: userId });
+//   if (existingUser) {
+//     console.log(
+//       `✅ [syncUser] User already exists in database (MongoDB ID: ${existingUser._id})`,
+//     );
+//     return res
+//       .status(200)
+//       .json({ user: existingUser, message: "User already exists" });
+//   }
+
+//   console.log(
+//     `📡 [syncUser] User not found locally. Fetching details from Clerk API...`,
+//   );
+//   const clerkUser = await clerkClient.users.getUser(userId);
+
+//   const emailAddress =
+//     clerkUser.emailAddresses?.find(
+//       (email) => email.id === clerkUser.primaryEmailAddressId,
+//     ) || clerkUser.emailAddresses?.[0];
+
+//   if (!emailAddress?.emailAddress) {
+//     console.error(
+//       `❌ [syncUser] User creation failed: No primary email found for Clerk ID ${userId}`,
+//     );
+//     return res.status(400).json({ error: "Clerk user has no email address" });
+//   }
+
+//   const email = emailAddress.emailAddress;
+//   const baseUsername = email.split("@")[0];
+//   const usernameTaken = await User.exists({
+//     username: baseUsername,
+//     clerkId: { $ne: userId },
+//   });
+
+//   const userData = {
+//     clerkId: userId,
+//     email,
+//     firstName: clerkUser.firstName || "",
+//     lastName: clerkUser.lastName || "",
+//     username: usernameTaken
+//       ? `${baseUsername}_${userId.slice(-6)}`
+//       : baseUsername,
+//     profilePicture: clerkUser.imageUrl || "",
+//   };
+
+//   const user = await User.create(userData);
+//   console.log(
+//     `🎉 [syncUser] Successfully created new user in DB (Username: ${user.username}, DB ID: ${user._id})`,
+//   );
+
+//   res.status(201).json({ user, message: "User created succesfully" });
+// });
+
 export const syncUser = asyncHandler(async (req, res) => {
   const { userId } = getAuth(req);
 
+  // check if user already exists in mongodb
   const existingUser = await User.findOne({ clerkId: userId });
   if (existingUser) {
     return res
@@ -32,6 +100,7 @@ export const syncUser = asyncHandler(async (req, res) => {
       .json({ user: existingUser, message: "User already exists" });
   }
 
+  // create new user from Clerk data
   const clerkUser = await clerkClient.users.getUser(userId);
 
   const userData = {
@@ -44,7 +113,8 @@ export const syncUser = asyncHandler(async (req, res) => {
   };
 
   const user = await User.create(userData);
-  res.status(201).json({ user, message: "User created succesfully" });
+
+  res.status(201).json({ user, message: "User created successfully" });
 });
 
 export const getCurrentUser = asyncHandler(async (req, res) => {
