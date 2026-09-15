@@ -20,9 +20,9 @@ router.get("/me", protectRoute, getCurrentUser);
 router.post("/follow/:targetUserId", protectRoute, followUser);
 
 //temp
-router.get("/check", checkHealth);
 export const checkHealth = async (req, res) => {
   res.status(200).json({ message: "Checking is working" });
 };
+router.get("/check", checkHealth);
 
 export default router;
