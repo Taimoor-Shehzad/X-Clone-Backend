@@ -58,7 +58,9 @@ export const syncUser = asyncHandler(async (req, res) => {
     email,
     firstName: clerkUser.firstName || "",
     lastName: clerkUser.lastName || "",
-    username: usernameTaken ? `${baseUsername}_${userId.slice(-6)}` : baseUsername,
+    username: usernameTaken
+      ? `${baseUsername}_${userId.slice(-6)}`
+      : baseUsername,
     profilePicture: clerkUser.imageUrl || "",
   };
 
@@ -124,3 +126,7 @@ export const followUser = asyncHandler(async (req, res) => {
     message: isFollowing ? "unfollowed succesfully" : "Followed Succesfully",
   });
 });
+
+export const checkHealth = async (req, res) => {
+  res.status(200).json({ message: "Checking is working" });
+};

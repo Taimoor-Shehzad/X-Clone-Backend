@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  checkHealth,
   followUser,
   getCurrentUser,
   getUserProfile,
@@ -20,9 +21,7 @@ router.get("/me", protectRoute, getCurrentUser);
 router.post("/follow/:targetUserId", protectRoute, followUser);
 
 //temp
-export const checkHealth = async (req, res) => {
-  res.status(200).json({ message: "Checking is working" });
-};
+
 router.get("/check", checkHealth);
 
 export default router;
