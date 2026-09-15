@@ -19,4 +19,10 @@ router.post("/sync", protectRoute, syncUser);
 router.get("/me", protectRoute, getCurrentUser);
 router.post("/follow/:targetUserId", protectRoute, followUser);
 
+//temp
+router.get("/check", checkHealth);
+export const checkHealth = async (req, res) => {
+  res.status(200).json({ message: "Checking is working" });
+};
+
 export default router;
