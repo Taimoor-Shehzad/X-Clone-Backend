@@ -3,6 +3,7 @@ import {
   followUser,
   getCurrentUser,
   getUserProfile,
+  getUsers,
   syncUser,
   updateProfile,
 } from "../controllers/user.controller.js";
@@ -18,5 +19,6 @@ router.put("/profile", protectRoute, updateProfile);
 router.post("/sync", protectRoute, syncUser);
 router.get("/me", protectRoute, getCurrentUser);
 router.post("/follow/:targetUserId", protectRoute, followUser);
+router.get("/", protectRoute, getUsers);
 
 export default router;

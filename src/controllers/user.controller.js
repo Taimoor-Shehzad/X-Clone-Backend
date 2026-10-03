@@ -108,3 +108,8 @@ export const followUser = asyncHandler(async (req, res) => {
     message: isFollowing ? "unfollowed succesfully" : "Followed Succesfully",
   });
 });
+
+export const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find();
+  res.status.json({ users });
+});
