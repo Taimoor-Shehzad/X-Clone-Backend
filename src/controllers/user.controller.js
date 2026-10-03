@@ -111,5 +111,5 @@ export const followUser = asyncHandler(async (req, res) => {
 
 export const getUsers = asyncHandler(async (req, res) => {
   const users = await User.find();
-  res.status.json({ users });
+  res.status(200).json({ users });
 });
