@@ -8,6 +8,7 @@ import {
   updateProfile,
 } from "../controllers/user.controller.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
+import upload from "../middleware/upload.middleware.js";
 
 const router = express.Router();
 
@@ -16,6 +17,17 @@ router.get("/profile/:username", getUserProfile);
 
 //authenticated
 router.put("/profile", protectRoute, updateProfile);
+
+router.put(
+  "/profile",
+  protectRoute,
+  upload.fields([
+    { name: "profilePicture", maxCount: 1 },
+    { name: "bannerImage", maxCount: 1 },
+  ]),
+  updateProfile,
+);
+
 router.post("/sync", protectRoute, syncUser);
 router.get("/me", protectRoute, getCurrentUser);
 router.post("/follow/:targetUserId", protectRoute, followUser);

@@ -2,6 +2,7 @@ import asyncHandler from "express-async-handler";
 import User from "../models/user.model.js";
 import { clerkClient, getAuth } from "@clerk/express";
 import Notification from "../models/notification.model.js";
+import cloudinary from "../config/cloudinary.js";
 
 export const getUserProfile = asyncHandler(async (req, res) => {
   const { username } = req.params;
@@ -13,7 +14,45 @@ export const getUserProfile = asyncHandler(async (req, res) => {
 
 export const updateProfile = asyncHandler(async (req, res) => {
   const { userId } = getAuth(req);
-  const user = await User.findOneAndUpdate({ clerkId: userId }, req.body, {
+  const updateData = { ...req.body };
+  const profileImageFile = req.file?.profilePicture;
+  const bannerImageFile = req.file?.bannerImage;
+
+  if (profileImageFile) {
+    try {
+      const base64Image = `data:${profileImageFile.mimetype};base64,${profileImageFile.buffer.toString("base64")}`;
+
+      const uploadResponse = await cloudinary.uploader.upload(base64Image, {
+        folder: "X-clone-userData",
+        resource_type: "image",
+        transformation: [{ quality: "auto" }, { format: "auto" }],
+      });
+
+      updateData.profilePicture = uploadResponse.secure_url;
+    } catch (error) {
+      console.log("Cloudinary upload error", error);
+      return res.status(400).json({ message: "failed to upload image" });
+    }
+  }
+
+  if (bannerImageFile) {
+    try {
+      const base64Image = `data:${bannerImageFile.mimetype};base64,${bannerImageFile.buffer.toString("base64")}`;
+
+      const uploadResponse = await cloudinary.uploader.upload(base64Image, {
+        folder: "X-clone-userData",
+        resource_type: "image",
+        transformation: [{ quality: "auto" }, { format: "auto" }],
+      });
+
+      updateData.bannerImage = uploadResponse.secure_url;
+    } catch (error) {
+      console.log("Cloudinary upload error", error);
+      return res.status(400).json({ message: "failed to upload image" });
+    }
+  }
+
+  const user = await User.findOneAndUpdate({ clerkId: userId }, updateData, {
     new: true,
   });
 
