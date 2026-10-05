@@ -15,8 +15,8 @@ export const getUserProfile = asyncHandler(async (req, res) => {
 export const updateProfile = asyncHandler(async (req, res) => {
   const { userId } = getAuth(req);
   const updateData = { ...req.body };
-  const profileImageFile = req.file?.profilePicture;
-  const bannerImageFile = req.file?.bannerImage;
+  const profileImageFile = req.files?.profilePicture?.[0];
+  const bannerImageFile = req.files?.bannerImage?.[0];
 
   if (profileImageFile) {
     try {

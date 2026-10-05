@@ -15,9 +15,6 @@ const router = express.Router();
 //public
 router.get("/profile/:username", getUserProfile);
 
-//authenticated
-router.put("/profile", protectRoute, updateProfile);
-
 router.put(
   "/profile",
   protectRoute,
